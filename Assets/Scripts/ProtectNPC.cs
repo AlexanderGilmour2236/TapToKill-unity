@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class ProtectNPC : MonoBehaviour
 {
@@ -45,6 +46,10 @@ public class ProtectNPC : MonoBehaviour
     private List<Vector3> _pathPoits;
     private PointPull _pointPull;
     [SerializeField] private LineRenderer lineRenderer;
+    
+    [SerializeField] private UnityEngine.UI.Image healthBar;
+    private Coroutine showHealthCoroutine;
+    [SerializeField] private float healthBarYOffset;
     
     /// <summary>
     /// Минимальное отклонение новой точки пути по оси x от предыдущей, по модулю
@@ -105,7 +110,6 @@ public class ProtectNPC : MonoBehaviour
     {
         transform.localEulerAngles += Vector3.back*Time.deltaTime * RotationSpeed;
         GeneratePath();
-        
         Vector3 NextPoint = transform.position;
         foreach (Vector3 point in _pathPoits)
         {
@@ -120,6 +124,8 @@ public class ProtectNPC : MonoBehaviour
         direction = direction.normalized * Speed * Time.deltaTime;
         
         transform.Translate(direction,Space.World);
+        healthBar.transform.position = transform.position;
+        healthBar.transform.Translate(0,healthBarYOffset,0);
     }
     /// <summary>
     /// Добавляет в массив _pathPoint новую точку если последняя точка в списке не дальше чем MainCamera.maxCameraSize по оси x,
@@ -192,6 +198,11 @@ public class ProtectNPC : MonoBehaviour
     private void GetDamage(Enemy enemy)
     {
         Health -= enemy.Damage;
+        if (showHealthCoroutine != null)
+        {
+            StopCoroutine(showHealthCoroutine);
+        }
+        showHealthCoroutine = StartCoroutine(ShowHealth());
         if (Health <= 0)
         {
             if (OnNpcDied != null)
@@ -203,6 +214,18 @@ public class ProtectNPC : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Показывает колличество HP и скрывает их через 1 секунду
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ShowHealth()
+    {
+        healthBar.enabled = true;
+        healthBar.fillAmount = Health / StartHealth;
+        yield return new WaitForSeconds(1);
+        healthBar.enabled = false;
+    }
+    
     private void Die()
     {
         gameObject.SetActive(false);
