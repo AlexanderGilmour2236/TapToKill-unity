@@ -7,25 +7,14 @@ using UnityEngine.UI;
 
 public class LoadingController : MonoBehaviour
 {
-    [SerializeField] private Image loadingBar;
-
-    private AsyncOperation _loading;
     private void Start()
     {
         StartCoroutine(Connect(LoadGame));
     }
 
-    private void Update()
-    {
-        if (_loading != null)
-        {
-            loadingBar.fillAmount = _loading.progress;
-        }
-    }
-
     public void LoadGame()
     {
-        _loading = SceneManager.LoadSceneAsync("Game");
+        SceneManager.LoadSceneAsync("Game");
     }
     
     private IEnumerator Connect(Action onComplete)

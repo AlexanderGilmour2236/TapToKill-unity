@@ -32,7 +32,7 @@ public class PauseButton : MonoBehaviour
 
     private void OnGameOver(GameController.GameOverType gameOverType)
     {
-        HideButton(false);
+        HideButton(true);
     }
    
 }

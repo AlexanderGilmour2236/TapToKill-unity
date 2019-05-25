@@ -51,13 +51,13 @@ public class GameController : MonoBehaviour
     
     public bool IsEnemySpawning;
     /// <summary>
-    /// Время до следующего спавно противников
+    /// Время до следующего спавна противников
     /// </summary>
     private float _timeToSpawnLeft = 0;
     /// <summary>
     /// Количество времени через которое будут спавниться новые противники
     /// </summary>
-    private float _spawnEvery = 2;
+    [SerializeField] private float spawnEvery = 2;
     /// <summary>
     /// Минимальное количество противников, которые могут спавниться за раз
     /// </summary>
@@ -134,22 +134,67 @@ public class GameController : MonoBehaviour
             
             Vector2 npcPos = protectNpc.transform.position;
             Vector3 spawnPoint;
+            // Расстояние от центра до края экрана по x
+            float halfWidth = MainCamera.Instance.CameraSize * Screen.width / Screen.height;
+            Vector2 enemySize = enemyPrefab.GetComponent<SpriteRenderer>().size;
+            
             for (int i = 0; i < toSpawn; i++)
             {
-                
-                Enemy enemy = Instantiate(
-                    enemyPrefab, new Vector3(
-                        Random.Range(-20 + npcPos.x, npcPos.x + 20),
-                        Random.Range(-20 + npcPos.y, 20 + npcPos.y),
+                // с какой стороны будет спавниться противник
+                int side = Random.Range(1, 4);
+
+                Enemy enemy;
+                if (side == 1)
+                {
+                    //top
+                    enemy = Instantiate(
+                        enemyPrefab, new Vector3(
+                        Random.Range(-halfWidth + npcPos.x, npcPos.x + halfWidth),
+                        npcPos.y + enemySize.y/2 + MainCamera.Instance.CameraSize + Random.Range(0,3),
                         0), new Quaternion(0, 0, 0, 0)
-                ).GetComponent<Enemy>();
+                    ).GetComponent<Enemy>();
+                }
+                else if (side == 2)
+                {
+                    //right
+                    enemy = Instantiate(
+                        enemyPrefab, new Vector3(
+                            npcPos.x + halfWidth + enemySize.x / 2 + Random.Range(0,3),
+                            Random.Range(-MainCamera.Instance.CameraSize - enemySize.x/2 + npcPos.y, MainCamera.Instance.CameraSize + npcPos.y + enemySize.x/2),
+                            0), new Quaternion(0, 0, 0, 0)
+                    ).GetComponent<Enemy>();
+                }
+                else if (side == 3)
+                {
+                    //bottom
+                    enemy = Instantiate(
+                        enemyPrefab, new Vector3(
+                            Random.Range(-halfWidth + npcPos.x, npcPos.x + halfWidth),
+                            npcPos.y - enemySize.y/2 - MainCamera.Instance.CameraSize - Random.Range(0,3),
+                            0), new Quaternion(0, 0, 0, 0)
+                    ).GetComponent<Enemy>();
+                }
+                else if(side == 4)
+                {
+                    //left
+                    enemy = Instantiate(
+                        enemyPrefab, new Vector3(
+                            npcPos.x - halfWidth - enemySize.x / 2 - Random.Range(0,3),
+                            Random.Range(-MainCamera.Instance.CameraSize - enemySize.x/2 + npcPos.y, MainCamera.Instance.CameraSize + npcPos.y + enemySize.x/2),
+                            0), new Quaternion(0, 0, 0, 0)
+                    ).GetComponent<Enemy>();
+                }
+                else
+                {
+                    enemy = new Enemy();
+                }
 
                 enemy.FollowedNPC = protectNpc;
 
                 Enemies.Add(enemy);
             }
 
-            _timeToSpawnLeft = _spawnEvery;
+            _timeToSpawnLeft = spawnEvery;
         }
     }
 

@@ -34,6 +34,7 @@ public class MainCamera : MonoBehaviour
     
     public Transform Target;
     public float CameraSpeed;
+    public float CameraChangeSizeSpeed;
     public float minCameraSize;
     public float maxCameraSize = 15;
     private Camera _camera;
@@ -54,6 +55,7 @@ public class MainCamera : MonoBehaviour
         transform.position = Vector2.Lerp(transform.position,Target.position, CameraSpeed*Time.deltaTime);
         transform.Translate(0,0,-10);
 
+        // Размер камеры в зависимости от противников
         float maxX, maxY;
         maxX = maxY = 0;
 
@@ -74,17 +76,17 @@ public class MainCamera : MonoBehaviour
 
         if (maxX == 0 || maxY == 0)
         {
-            CameraSize = Mathf.Lerp(CameraSize, minCameraSize, CameraSpeed*Time.deltaTime);
+            CameraSize = Mathf.Lerp(CameraSize, minCameraSize, CameraChangeSizeSpeed*Time.deltaTime);
         }
         else
         {
             if (maxX > maxY)
             {
-                CameraSize = Mathf.Lerp(CameraSize, Mathf.Clamp(maxX * 1.3f * Screen.height/Screen.width, minCameraSize,maxCameraSize), CameraSpeed*Time.deltaTime);
+                CameraSize = Mathf.Lerp(CameraSize, Mathf.Clamp(maxX * 1.3f * Screen.height/Screen.width, minCameraSize,maxCameraSize), CameraChangeSizeSpeed*Time.deltaTime);
             }
             else
             {
-                CameraSize = Mathf.Lerp(CameraSize, Mathf.Clamp(maxY * 1.3f, minCameraSize,maxCameraSize), CameraSpeed*Time.deltaTime);
+                CameraSize = Mathf.Lerp(CameraSize, Mathf.Clamp(maxY * 1.3f, minCameraSize,maxCameraSize), CameraChangeSizeSpeed*Time.deltaTime);
             }
         }
     }
