@@ -95,7 +95,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FollowedNPC: {fileID: 0}
-  Speed: 5
+  Speed: 4
   Health: 1
   StartHealth: 1
   Damage: 1

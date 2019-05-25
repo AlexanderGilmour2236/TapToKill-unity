@@ -299,6 +299,8 @@ MonoBehaviour:
   lineRenderer: {fileID: 106269127}
   healthBar: {fileID: 473549953}
   healthBarYOffset: 0.8
+  audioSource: {fileID: 381724471}
+  hitSound: {fileID: 8300000, guid: 41d4351085d26f44bbfd098e67651060, type: 3}
   MinPointOffsetX: 0.5
   MaxPointOffset: {x: 7, y: 3}
 --- !u!50 &72851091
@@ -1699,7 +1701,7 @@ MonoBehaviour:
   IsEnemySpawning: 0
   spawnEvery: 2
   MinEnemiesToSpawn: 2
-  MaxEnemiesToSpawn: 5
+  MaxEnemiesToSpawn: 4
   _soundAudioSource: {fileID: 381724471}
 --- !u!1 &1210191243
 GameObject:
@@ -2035,7 +2037,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 72851089}
-  CameraSpeed: 5
+  CameraSpeed: 7
   CameraChangeSizeSpeed: 1
-  minCameraSize: 5
-  maxCameraSize: 7
+  MinCameraSize: 5
+  MaxCameraSize: 12
+  OffsetX: 0.1

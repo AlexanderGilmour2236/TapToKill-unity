@@ -26,7 +26,7 @@ public class LoadingController : MonoBehaviour
       yield return www;
       if (www.error != null)
       {
-          StartCoroutine(Connect());
+          StartCoroutine(Connect(LoadGame));
           yield break;
       }
       Debug.Log(www.text);

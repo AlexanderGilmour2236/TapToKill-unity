@@ -35,9 +35,10 @@ public class MainCamera : MonoBehaviour
     public Transform Target;
     public float CameraSpeed;
     public float CameraChangeSizeSpeed;
-    public float minCameraSize;
-    public float maxCameraSize;
+    public float MinCameraSize;
+    public float MaxCameraSize;
     private Camera _camera;
+    public float OffsetX;
     
     private void Start()
     {
@@ -57,7 +58,10 @@ public class MainCamera : MonoBehaviour
     {
         transform.position = Vector2.Lerp(transform.position,Target.position, CameraSpeed*Time.deltaTime);
         transform.Translate(0,0,-10);
-
+        if (GameController.Instance.IsGameRunning && !GameController.Instance.IsPaused)
+        {
+            transform.Translate(OffsetX, 0, 0);
+        }
         // Изменение размера камеры в зависимости от позиции противников
         float maxX, maxY;
         maxX = maxY = 0;
@@ -77,18 +81,18 @@ public class MainCamera : MonoBehaviour
             }
         }
 
-        if (maxX == 0 || maxY == 0)
+        if (GameController.Instance.Enemies.Count==0)
         {
-            CameraSize = Mathf.Lerp(CameraSize, minCameraSize, CameraChangeSizeSpeed*Time.deltaTime);
+            CameraSize = Mathf.Lerp(CameraSize, MinCameraSize, CameraChangeSizeSpeed*Time.deltaTime);
         }
         else if (maxX > maxY)
         {
             
-            CameraSize = Mathf.Lerp(CameraSize, Mathf.Clamp(maxX * 1.3f * Screen.height/Screen.width, minCameraSize,maxCameraSize), CameraChangeSizeSpeed*Time.deltaTime);
+            CameraSize = Mathf.Lerp(CameraSize, Mathf.Clamp(maxX * Screen.height/Screen.width, MinCameraSize,MaxCameraSize / 2), CameraChangeSizeSpeed*Time.deltaTime);
         }
         else
         {
-            CameraSize = Mathf.Lerp(CameraSize, Mathf.Clamp(maxY * 2.0f, minCameraSize,maxCameraSize), CameraChangeSizeSpeed*Time.deltaTime);
+            CameraSize = Mathf.Lerp(CameraSize, Mathf.Clamp(maxY * 1.3f, MinCameraSize,MaxCameraSize), CameraChangeSizeSpeed*Time.deltaTime);
         }
     }
 }
