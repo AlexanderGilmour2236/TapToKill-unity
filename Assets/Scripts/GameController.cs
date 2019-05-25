@@ -42,17 +42,26 @@ public class GameController : MonoBehaviour
     [SerializeField] private ProtectNPC protectNpc;
     [SerializeField] private Renderer background;
     [SerializeField] private GameObject enemyPrefab;
+    
     [SerializeField] private Image timeBar;
-    [SerializeField] private float _startTime;
+    /// <summary>
+    /// Количество времени, необходимое для победы
+    /// </summary>
+    [SerializeField] private float startTime;
+    /// <summary>
+    /// Количество времени которое осталось до победы
+    /// </summary>
     public float TimeLeft { get; private set; }
-    public float StartTime => _startTime;
+    public float StartTime => startTime;
 
     /// <summary>
     /// Урон, который игрок наносит кликом мыши
     /// </summary>
     public float PlayerDamage;
-    public List<Enemy> Enemies { get; private set; }
     public bool IsPaused { get; private set; }
+    public bool IsGameRunning { get; private set; }
+    
+    public List<Enemy> Enemies { get; private set; }
     private EnemyPull _enemyPull;
     public bool IsEnemySpawning;
     /// <summary>
@@ -96,8 +105,8 @@ public class GameController : MonoBehaviour
     {      
         ProtectNPC.OnNpcHit += DestroyEnemy;
         ProtectNPC.OnNpcDied += () => GameOver(GameOverType.Lost);
-        
-        _enemyPull = new EnemyPull();
+
+        _enemyPull = new GameObject().AddComponent<EnemyPull>(); 
         Enemies = new List<Enemy>();
         IsEnemySpawning = false;
         
@@ -115,22 +124,28 @@ public class GameController : MonoBehaviour
     private void Update()
     {
         background.transform.position = MainCamera.Instance.transform.position;
-        background.material.mainTextureOffset = MainCamera.Instance.transform.position;
+        background.material.mainTextureOffset = background.transform.position;
         background.transform.Translate(0,0,10);
         
+        // Таймер общего времени
+        if (IsGameRunning && !IsPaused)
+        {
+            TimerTick();
+        }
         // Спавн противников
         if (IsEnemySpawning)
         {
-            TimerTick();
-
             SpawnEnemies();
         }
     }
 
+    /// <summary>
+    /// Вызывает GameOver(win) когда TimeLeft достигает нуля
+    /// </summary>
     private void TimerTick()
     {
         TimeLeft -= Time.deltaTime;
-        timeBar.fillAmount = TimeLeft / _startTime;
+        timeBar.fillAmount = TimeLeft / startTime;
 
         if (TimeLeft <= 0)
         {
@@ -148,12 +163,15 @@ public class GameController : MonoBehaviour
         // спавн противников
         if (_timeToSpawnLeft < 0)
         {
+            // количество врагов которое будет спавниться
             int toSpawn = Random.Range(MinEnemiesToSpawn, MaxEnemiesToSpawn + 1);
             
             Vector2 npcPos = protectNpc.transform.position;
+            
             Vector3 spawnPoint;
             // Расстояние от центра до края экрана по x
             float halfWidth = MainCamera.Instance.CameraSize * Screen.width / Screen.height;
+            
             Vector2 enemySize = enemyPrefab.GetComponent<SpriteRenderer>().size;
             
             for (int i = 0; i < toSpawn; i++)
@@ -216,7 +234,8 @@ public class GameController : MonoBehaviour
         ClearEnemies();
         IsEnemySpawning = true;
         _timeToSpawnLeft = 0;
-        TimeLeft = _startTime;
+        TimeLeft = startTime;
+        IsGameRunning = true;
     }
 
     public void Pause(bool pauseParameter)
@@ -241,6 +260,8 @@ public class GameController : MonoBehaviour
     private void GameOver(GameOverType gameOverType)
     {
         IsEnemySpawning = false;
+        IsGameRunning = false;
+        
         ClearEnemies();
         if (OnGameOver != null)
         {
@@ -251,8 +272,11 @@ public class GameController : MonoBehaviour
     public void ToMainMenu()
     {
         IsEnemySpawning = false;
+        IsGameRunning = false;
+        
         ClearEnemies();
         protectNpc.RestartNPC();
+        
         if (IsPaused)
         {
             Pause(false);
@@ -263,20 +287,20 @@ public class GameController : MonoBehaviour
         }
     }
     /// <summary>
-    /// Очищает список противников и удаляет их из сцены
+    /// Очищает список противников и возвращает их в пул
     /// </summary>
     private void ClearEnemies()
     {
         foreach (Enemy enemy in Enemies)
         {
-            Destroy(enemy.gameObject);
+            _enemyPull.ReleaseEnemy(enemy);
         }
 
         Enemies.Clear();
     }
     
     /// <summary>
-    /// Уничтожает противника и убирает его из контейнера
+    /// Возвразает противника в пул и убирает его из контейнера
     /// </summary>
     /// <param name="enemy">Противник</param>
     public void DestroyEnemy(Enemy enemy)
@@ -311,10 +335,12 @@ public class GameController : MonoBehaviour
 
         public void ReleaseEnemy(Enemy enemy)
         {
-            _used.Pop();
-            _free.Push(enemy);
-            enemy.gameObject.SetActive(false);
-            
+            if (_used.Count != 0)
+            {
+                _used.Pop();
+                _free.Push(enemy);
+                enemy.gameObject.SetActive(false);
+            }
         }
     }
 }

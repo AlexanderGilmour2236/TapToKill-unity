@@ -18,7 +18,6 @@ public class PauseButton : MonoBehaviour
     {
         gameObject.SetActive(!hideParameter);
     }
-
     
     private void OnMainMenu()
     {

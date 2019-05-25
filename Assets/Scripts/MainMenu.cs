@@ -21,8 +21,6 @@ public class MainMenu : MonoBehaviour
         GameController.OnPause += OnPause;
         GameController.OnMainMenu += OnMainMenu;
         _buttons = buttonsLayoutGroup.GetComponentsInChildren<Button>();
-        
-        ShowMenu(MenuType.MainMenu);
     }
 
     private void OnMainMenu()
@@ -85,8 +83,8 @@ public class MainMenu : MonoBehaviour
             TimeSpan span = TimeSpan.FromSeconds(GameController.Instance.StartTime - GameController.Instance.TimeLeft);
             DateTime time = new DateTime(2019, 1, 1, 0, 0, 0);
             time += span;
-         
-            mainLabel.text = "YOU'VE SURVIVED " + time.ToString("m:ss")+"s";
+
+            mainLabel.text = string.Format("YOU'VE SURVIVED {0}s", time.ToString("m:ss"));
             
             mainLabel.fontSize = 68;
             _buttons[1].gameObject.SetActive(true);

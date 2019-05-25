@@ -41,7 +41,10 @@ public class ProtectNPC : MonoBehaviour
     public float RotationSpeed;
     public float Health { get; private set; }
     public float StartHealth;
-    private Vector2 _targetDirection;
+    /// <summary>
+    /// Точка к которой стремится NPC
+    /// </summary>
+    private Vector3 _targetDirection;
     
     private List<Vector3> _pathPoits;
     private PointPull _pointPull;
@@ -79,9 +82,6 @@ public class ProtectNPC : MonoBehaviour
     
     private void Start()
     {
-        int seed = Random.Range(0, 255);
-        Random.InitState(seed);
-        Debug.Log("Seed: "+ seed);
         OnNpcHit += TakeDamage;
         GameController.OnGameStart += RestartNPC;
         
@@ -105,22 +105,26 @@ public class ProtectNPC : MonoBehaviour
 
     private void Update()
     {
-        transform.localEulerAngles += Vector3.back*Time.deltaTime * RotationSpeed;
+        transform.localEulerAngles += Vector3.back * RotationSpeed * Time.deltaTime;
+        
         GeneratePath();
-        Vector3 NextPoint = transform.position;
+        
+        _targetDirection = transform.position;
         foreach (Vector3 point in _pathPoits)
         {
-            if (point.x > NextPoint.x)
+            if (point.x > _targetDirection.x)
             {
-                NextPoint = point;
+                _targetDirection = point;
                 break;
             }
         }
         
-        Vector2 direction = NextPoint - transform.position;
+        // определяем сторону в которую будет двигаться персонаж
+        Vector2 direction = _targetDirection - transform.position;
         direction = direction.normalized * Speed * Time.deltaTime;
         
         transform.Translate(direction,Space.World);
+        //Двигаем HealthBar относительно персонажа
         healthBar.transform.position = transform.position;
         healthBar.transform.Translate(0,healthBarYOffset,0);
     }
@@ -161,18 +165,18 @@ public class ProtectNPC : MonoBehaviour
             if (_pathPoits[_pathPoits.Count - 1].x < transform.position.x + MainCamera.Instance.maxCameraSize  * Screen.width/Screen.height)
             {
                 point = _pointPull.GetPoint();
-            
-                float lastX = _pathPoits[_pathPoits.Count - 1].x;
-                float lastY = _pathPoits[_pathPoits.Count - 1].y;
+
+                Vector3 lastPoint = _pathPoits[_pathPoits.Count - 1];
         
-                point.x = Random.Range(lastX + MinPointOffsetX, lastX + MaxPointOffset.x);
-                point.y = Random.Range(lastY - MaxPointOffset.y, lastY + MaxPointOffset.y);
+                point.x = Random.Range(lastPoint.x + MinPointOffsetX, lastPoint.x + MaxPointOffset.x);
+                point.y = Random.Range(lastPoint.y - MaxPointOffset.y, lastPoint.y + MaxPointOffset.y);
             
                 _pathPoits.Add(point);
             }
 
         }
-
+        
+        // если была добавлена точка, меняем координаты линии
         if (count != _pathPoits.Count)
         {
             lineRenderer.positionCount = _pathPoits.Count;
@@ -192,6 +196,10 @@ public class ProtectNPC : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Получает урон от противника и уничтожает его
+    /// </summary>
+    /// <param name="enemy">Противник</param>
     private void TakeDamage(Enemy enemy)
     {
         Health -= enemy.Damage;
@@ -202,6 +210,7 @@ public class ProtectNPC : MonoBehaviour
             StopCoroutine(showHealthCoroutine);
         }
         showHealthCoroutine = StartCoroutine(ShowHealth());
+        
         if (Health <= 0)
         {
             if (OnNpcDied != null)

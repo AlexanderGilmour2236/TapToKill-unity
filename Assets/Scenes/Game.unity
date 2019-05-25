@@ -295,7 +295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 3
   RotationSpeed: 150
-  StartHealth: 15
+  StartHealth: 10
   lineRenderer: {fileID: 106269127}
   healthBar: {fileID: 473549953}
   healthBarYOffset: 0.8
@@ -368,7 +368,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 106269125}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 69.51027, y: -0.09721933, z: -4.3632812}
+  m_LocalPosition: {x: 69.51027, y: -0.09721933, z: 9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1694,7 +1694,7 @@ MonoBehaviour:
   enemyPrefab: {fileID: 3222628336614893267, guid: f6136c986d4109b4695f2ffa2fa3183b,
     type: 3}
   timeBar: {fileID: 621757346}
-  _startTime: 60
+  startTime: 60
   PlayerDamage: 1
   IsEnemySpawning: 0
   spawnEvery: 2
@@ -2038,4 +2038,4 @@ MonoBehaviour:
   CameraSpeed: 5
   CameraChangeSizeSpeed: 1
   minCameraSize: 5
-  maxCameraSize: 8
+  maxCameraSize: 7

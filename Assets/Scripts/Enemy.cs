@@ -6,12 +6,19 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     private SpriteRenderer _renderer;
+    /// <summary>
+    /// Объект за которым следует противник
+    /// </summary>
     public ProtectNPC FollowedNPC;
     public float Speed;
     public float Health;
     public float StartHealth;
     public float Damage;
+    /// <summary>
+    /// Стартовый цвет спрайта
+    /// </summary>
     private Color _spriteColor;
+    
     public AudioSource AudioSource;
     [SerializeField] private AudioClip hitSound;
     
@@ -57,6 +64,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Получает урон, при достижении здоровья 0 вызывает OnEnemyDied
+    /// </summary>
+    /// <param name="damage">Получаемый урон</param>
     public void TakeDamage(float damage)
     {
         StartCoroutine(TakeDamageCoroutine(damage));

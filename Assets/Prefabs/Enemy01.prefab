@@ -99,7 +99,6 @@ MonoBehaviour:
   Health: 1
   StartHealth: 1
   Damage: 1
-  SpriteColor: {r: 0.4095533, g: 1, b: 0, a: 0}
   AudioSource: {fileID: 0}
   hitSound: {fileID: 8300000, guid: 81d363df7e0f6d848b961f764ec05dc3, type: 3}
 --- !u!50 &-5572060179897087826
@@ -138,4 +137,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.089848995}
   serializedVersion: 2
-  m_Radius: 0.7016083
+  m_Radius: 0.94
