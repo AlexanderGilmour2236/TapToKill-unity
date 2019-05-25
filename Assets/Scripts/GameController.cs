@@ -42,13 +42,18 @@ public class GameController : MonoBehaviour
     [SerializeField] private ProtectNPC protectNpc;
     [SerializeField] private Renderer background;
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private Image timeBar;
+    [SerializeField] private float _startTime;
+    public float TimeLeft { get; private set; }
+    public float StartTime => _startTime;
+
     /// <summary>
     /// Урон, который игрок наносит кликом мыши
     /// </summary>
     public float PlayerDamage;
     public List<Enemy> Enemies { get; private set; }
     public bool IsPaused { get; private set; }
-    
+    private EnemyPull _enemyPull;
     public bool IsEnemySpawning;
     /// <summary>
     /// Время до следующего спавна противников
@@ -90,8 +95,9 @@ public class GameController : MonoBehaviour
     private void Start()
     {      
         ProtectNPC.OnNpcHit += DestroyEnemy;
-        ProtectNPC.OnNpcDied += GameOver;
+        ProtectNPC.OnNpcDied += () => GameOver(GameOverType.Lost);
         
+        _enemyPull = new EnemyPull();
         Enemies = new List<Enemy>();
         IsEnemySpawning = false;
         
@@ -111,15 +117,24 @@ public class GameController : MonoBehaviour
         background.transform.position = MainCamera.Instance.transform.position;
         background.material.mainTextureOffset = MainCamera.Instance.transform.position;
         background.transform.Translate(0,0,10);
-        if (Input.GetKey(KeyCode.R))
-        {
-            RestartScene();
-        }
         
         // Спавн противников
         if (IsEnemySpawning)
         {
+            TimerTick();
+
             SpawnEnemies();
+        }
+    }
+
+    private void TimerTick()
+    {
+        TimeLeft -= Time.deltaTime;
+        timeBar.fillAmount = TimeLeft / _startTime;
+
+        if (TimeLeft <= 0)
+        {
+            GameOver(GameOverType.Win);
         }
     }
 
@@ -130,9 +145,10 @@ public class GameController : MonoBehaviour
     {
         _timeToSpawnLeft -= Time.deltaTime;
         
+        // спавн противников
         if (_timeToSpawnLeft < 0)
         {
-            int toSpawn = Random.Range(MinEnemiesToSpawn, MaxEnemiesToSpawn);
+            int toSpawn = Random.Range(MinEnemiesToSpawn, MaxEnemiesToSpawn + 1);
             
             Vector2 npcPos = protectNpc.transform.position;
             Vector3 spawnPoint;
@@ -143,52 +159,42 @@ public class GameController : MonoBehaviour
             for (int i = 0; i < toSpawn; i++)
             {
                 // с какой стороны будет спавниться противник
-                int side = Random.Range(1, 4);
+                int side = Random.Range(1, 5);
 
-                Enemy enemy;
+                Enemy enemy = _enemyPull.GetEnemy();
                 if (side == 1)
                 {
                     //top
-                    enemy = Instantiate(
-                        enemyPrefab, new Vector3(
+                    enemy.transform.position = new Vector3(
                         Random.Range(-halfWidth + npcPos.x, npcPos.x + halfWidth),
-                        npcPos.y + enemySize.y/2 + MainCamera.Instance.CameraSize + Random.Range(0,3),
-                        0), new Quaternion(0, 0, 0, 0)
-                    ).GetComponent<Enemy>();
+                        npcPos.y + enemySize.y / 2 + MainCamera.Instance.CameraSize + Random.Range(0, 3),
+                        0);
                 }
                 else if (side == 2)
                 {
                     //right
-                    enemy = Instantiate(
-                        enemyPrefab, new Vector3(
-                            npcPos.x + halfWidth + enemySize.x / 2 + Random.Range(0,3),
-                            Random.Range(-MainCamera.Instance.CameraSize - enemySize.x/2 + npcPos.y, MainCamera.Instance.CameraSize + npcPos.y + enemySize.x/2),
-                            0), new Quaternion(0, 0, 0, 0)
-                    ).GetComponent<Enemy>();
+                    enemy.transform.position = new Vector3(
+                        npcPos.x + halfWidth + enemySize.x / 2 + Random.Range(0, 3),
+                        Random.Range(-MainCamera.Instance.CameraSize - enemySize.x / 2 + npcPos.y,
+                            MainCamera.Instance.CameraSize + npcPos.y + enemySize.x / 2),
+                        0);
                 }
                 else if (side == 3)
                 {
                     //bottom
-                    enemy = Instantiate(
-                        enemyPrefab, new Vector3(
-                            Random.Range(-halfWidth + npcPos.x, npcPos.x + halfWidth),
-                            npcPos.y - enemySize.y/2 - MainCamera.Instance.CameraSize - Random.Range(0,3),
-                            0), new Quaternion(0, 0, 0, 0)
-                    ).GetComponent<Enemy>();
+                    enemy.transform.position = new Vector3(
+                        Random.Range(-halfWidth + npcPos.x, npcPos.x + halfWidth),
+                        npcPos.y - enemySize.y / 2 - MainCamera.Instance.CameraSize - Random.Range(0, 3),
+                        0);
                 }
                 else if(side == 4)
                 {
                     //left
-                    enemy = Instantiate(
-                        enemyPrefab, new Vector3(
-                            npcPos.x - halfWidth - enemySize.x / 2 - Random.Range(0,3),
-                            Random.Range(-MainCamera.Instance.CameraSize - enemySize.x/2 + npcPos.y, MainCamera.Instance.CameraSize + npcPos.y + enemySize.x/2),
-                            0), new Quaternion(0, 0, 0, 0)
-                    ).GetComponent<Enemy>();
-                }
-                else
-                {
-                    enemy = new Enemy();
+                    enemy.transform.position = new Vector3(
+                        npcPos.x - halfWidth - enemySize.x / 2 - Random.Range(0, 3),
+                        Random.Range(-MainCamera.Instance.CameraSize - enemySize.x / 2 + npcPos.y,
+                            MainCamera.Instance.CameraSize + npcPos.y + enemySize.x / 2),
+                        0);
                 }
 
                 enemy.AudioSource = _soundAudioSource;
@@ -196,7 +202,7 @@ public class GameController : MonoBehaviour
 
                 Enemies.Add(enemy);
             }
-
+            
             _timeToSpawnLeft = spawnEvery;
         }
     }
@@ -210,6 +216,7 @@ public class GameController : MonoBehaviour
         ClearEnemies();
         IsEnemySpawning = true;
         _timeToSpawnLeft = 0;
+        TimeLeft = _startTime;
     }
 
     public void Pause(bool pauseParameter)
@@ -231,13 +238,13 @@ public class GameController : MonoBehaviour
         }
     }
     
-    private void GameOver()
+    private void GameOver(GameOverType gameOverType)
     {
         IsEnemySpawning = false;
         ClearEnemies();
         if (OnGameOver != null)
         {
-            OnGameOver(GameOverType.Lost);
+            OnGameOver(gameOverType);
         }
     }
     
@@ -254,7 +261,6 @@ public class GameController : MonoBehaviour
         {
             OnMainMenu();
         }
-
     }
     /// <summary>
     /// Очищает список противников и удаляет их из сцены
@@ -268,11 +274,6 @@ public class GameController : MonoBehaviour
 
         Enemies.Clear();
     }
-
-    void RestartScene()
-    {
-        SceneManager.LoadScene("Game");
-    }
     
     /// <summary>
     /// Уничтожает противника и убирает его из контейнера
@@ -283,5 +284,34 @@ public class GameController : MonoBehaviour
         Enemies.Remove(enemy);
         Destroy(enemy.gameObject);
     }
+    
+    class EnemyPull : MonoBehaviour
+    {
+        Stack<Enemy> _used = new Stack<Enemy>();
+        Stack<Enemy> _free = new Stack<Enemy>();
 
+        public Enemy GetEnemy()
+        {
+            if (_free.Count == 0)
+            {
+                Enemy enemy = Instantiate(Instance.enemyPrefab).GetComponent<Enemy>();
+                _used.Push(enemy);
+                return enemy;
+            }
+            else
+            {
+                Enemy enemy = _free.Pop();
+                _used.Push(enemy);
+                return enemy;
+            }
+        }
+
+        public void ReleaseObject(Enemy enemy)
+        {
+            _used.Pop();
+            _free.Push(enemy);
+        }
+    }
 }
+
+

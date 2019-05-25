@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -81,7 +82,12 @@ public class MainMenu : MonoBehaviour
         }
         else if (menuType == MenuType.GameOverMenu)
         {
-            mainLabel.text = "YOU'VE SURVIVED 0:00s";
+            TimeSpan span = TimeSpan.FromSeconds(GameController.Instance.StartTime - GameController.Instance.TimeLeft);
+            DateTime time = new DateTime(2019, 1, 1, 0, 0, 0);
+            time += span;
+         
+            mainLabel.text = "YOU'VE SURVIVED " + time.ToString("m:ss")+"s";
+            
             mainLabel.fontSize = 68;
             _buttons[1].gameObject.SetActive(true);
             _buttons[0].GetComponentInChildren<Text>().text = "TRY AGAIN";
@@ -102,7 +108,7 @@ public class MainMenu : MonoBehaviour
             _buttons[0].onClick.RemoveAllListeners();
             _buttons[0].onClick.AddListener(GameController.Instance.GameStart);
             
-            _buttons[0].GetComponentInChildren<Text>().text = "MAIN MENU";
+            _buttons[1].GetComponentInChildren<Text>().text = "MAIN MENU";
         }
         
         gameObject.SetActive(true);
