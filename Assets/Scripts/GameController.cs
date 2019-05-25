@@ -282,7 +282,7 @@ public class GameController : MonoBehaviour
     public void DestroyEnemy(Enemy enemy)
     {
         Enemies.Remove(enemy);
-        Destroy(enemy.gameObject);
+        _enemyPull.ReleaseEnemy(enemy);
     }
     
     class EnemyPull : MonoBehaviour
@@ -302,14 +302,19 @@ public class GameController : MonoBehaviour
             {
                 Enemy enemy = _free.Pop();
                 _used.Push(enemy);
+                
+                enemy.gameObject.SetActive(true);
+                enemy.Restart();
                 return enemy;
             }
         }
 
-        public void ReleaseObject(Enemy enemy)
+        public void ReleaseEnemy(Enemy enemy)
         {
             _used.Pop();
             _free.Push(enemy);
+            enemy.gameObject.SetActive(false);
+            
         }
     }
 }

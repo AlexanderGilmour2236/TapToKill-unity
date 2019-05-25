@@ -99,9 +99,6 @@ public class ProtectNPC : MonoBehaviour
 
     private void OnDestroy()
     {
-        OnNpcHit -= TakeDamage;
-        GameController.OnGameStart -= RestartNPC;
-        
         OnNpcHit = delegate(Enemy enemy) {  };
         OnNpcDied = delegate {  };
     }

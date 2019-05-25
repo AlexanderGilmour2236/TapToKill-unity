@@ -295,7 +295,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Speed: 3
   RotationSpeed: 150
-  StartHealth: 10
+  StartHealth: 15
   lineRenderer: {fileID: 106269127}
   healthBar: {fileID: 473549953}
   healthBarYOffset: 0.8
@@ -1699,7 +1699,7 @@ MonoBehaviour:
   IsEnemySpawning: 0
   spawnEvery: 2
   MinEnemiesToSpawn: 2
-  MaxEnemiesToSpawn: 3
+  MaxEnemiesToSpawn: 5
   _soundAudioSource: {fileID: 381724471}
 --- !u!1 &1210191243
 GameObject:
@@ -1992,7 +1992,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 6
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2038,4 +2038,4 @@ MonoBehaviour:
   CameraSpeed: 5
   CameraChangeSizeSpeed: 1
   minCameraSize: 5
-  maxCameraSize: 10
+  maxCameraSize: 8

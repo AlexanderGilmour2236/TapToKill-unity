@@ -9,8 +9,9 @@ public class Enemy : MonoBehaviour
     public ProtectNPC FollowedNPC;
     public float Speed;
     public float Health;
+    public float StartHealth;
     public float Damage;
-    public Color SpriteColor;
+    private Color _spriteColor;
     public AudioSource AudioSource;
     [SerializeField] private AudioClip hitSound;
     
@@ -26,13 +27,20 @@ public class Enemy : MonoBehaviour
     {
         OnEnemyDied += GameController.Instance.DestroyEnemy;
         _renderer = GetComponent<SpriteRenderer>();
+        _spriteColor = _renderer.color;
     }
 
+    public void Restart()
+    {   
+        Health = StartHealth;
+        _renderer.color = _spriteColor;
+    }
+    
     private void OnDestroy()
     {
         OnEnemyDied = delegate(Enemy enemy) {  };
     }
-
+    
     private void Update()
     {
         Vector2 direction = FollowedNPC.transform.position - transform.position;
@@ -62,7 +70,7 @@ public class Enemy : MonoBehaviour
         AudioSource.PlayOneShot(hitSound);
         
         yield return new WaitForSeconds(0.1f);
-        _renderer.color = SpriteColor;
+        _renderer.color = _spriteColor;
         if (Health <= 0)
         {
             if (OnEnemyDied != null)
