@@ -5,12 +5,16 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private Renderer _renderer;
+    private SpriteRenderer _renderer;
     public ProtectNPC FollowedNPC;
     public float Speed;
     public float Health;
     public float Damage;
-
+    public Color SpriteColor;
+    public AudioSource AudioSource;
+    [SerializeField] private AudioClip hitSound;
+    
+    
     #region Events
 
     public delegate void EnemyDied(Enemy enemy);
@@ -21,7 +25,7 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         OnEnemyDied += GameController.Instance.DestroyEnemy;
-        _renderer = GetComponent<Renderer>();
+        _renderer = GetComponent<SpriteRenderer>();
     }
 
     private void OnDestroy()
@@ -41,17 +45,24 @@ public class Enemy : MonoBehaviour
     {
         if (!GameController.Instance.IsPaused)
         {
-            StartCoroutine(GetDamage(GameController.Instance.PlayerDamage));
+            TakeDamage(GameController.Instance.PlayerDamage);
         }
     }
 
-    private IEnumerator GetDamage(float damage)
+    public void TakeDamage(float damage)
+    {
+        StartCoroutine(TakeDamageCoroutine(damage));
+    }
+    
+    
+    private IEnumerator TakeDamageCoroutine(float damage)
     {
         Health -= damage;
-        _renderer.material.color = Color.black;
-        yield return new WaitForSeconds(0.1f);
-        _renderer.material.color = Color.white;
+        _renderer.color = Color.white;
+        AudioSource.PlayOneShot(hitSound);
         
+        yield return new WaitForSeconds(0.1f);
+        _renderer.color = SpriteColor;
         if (Health <= 0)
         {
             if (OnEnemyDied != null)

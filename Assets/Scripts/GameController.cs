@@ -66,7 +66,9 @@ public class GameController : MonoBehaviour
     /// Максимальное количество противников, которые могут спавниться за раз
     /// </summary>
     public int MaxEnemiesToSpawn;
-    
+
+    [SerializeField] private AudioSource _soundAudioSource;
+
     #region Events
 
     public delegate void onMainMenu();
@@ -189,6 +191,7 @@ public class GameController : MonoBehaviour
                     enemy = new Enemy();
                 }
 
+                enemy.AudioSource = _soundAudioSource;
                 enemy.FollowedNPC = protectNpc;
 
                 Enemies.Add(enemy);

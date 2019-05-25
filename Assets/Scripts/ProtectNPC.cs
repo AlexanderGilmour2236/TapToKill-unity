@@ -82,7 +82,7 @@ public class ProtectNPC : MonoBehaviour
         int seed = Random.Range(0, 255);
         Random.InitState(seed);
         Debug.Log("Seed: "+ seed);
-        OnNpcHit += GetDamage;
+        OnNpcHit += TakeDamage;
         GameController.OnGameStart += RestartNPC;
         
         _pointPull = new PointPull();
@@ -99,7 +99,7 @@ public class ProtectNPC : MonoBehaviour
 
     private void OnDestroy()
     {
-        OnNpcHit -= GetDamage;
+        OnNpcHit -= TakeDamage;
         GameController.OnGameStart -= RestartNPC;
         
         OnNpcHit = delegate(Enemy enemy) {  };
@@ -195,9 +195,11 @@ public class ProtectNPC : MonoBehaviour
         }
     }
 
-    private void GetDamage(Enemy enemy)
+    private void TakeDamage(Enemy enemy)
     {
         Health -= enemy.Damage;
+        enemy.TakeDamage(enemy.Health);
+        
         if (showHealthCoroutine != null)
         {
             StopCoroutine(showHealthCoroutine);

@@ -86,7 +86,7 @@ public class MainCamera : MonoBehaviour
             }
             else
             {
-                CameraSize = Mathf.Lerp(CameraSize, Mathf.Clamp(maxY * 1.3f, minCameraSize,maxCameraSize), CameraChangeSizeSpeed*Time.deltaTime);
+                CameraSize = Mathf.Lerp(CameraSize, Mathf.Clamp(maxY * 2.0f, minCameraSize,maxCameraSize), CameraChangeSizeSpeed*Time.deltaTime);
             }
         }
     }
