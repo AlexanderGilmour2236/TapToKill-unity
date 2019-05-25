@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aaec0a76-03af-4308-8857-7539a58983f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.unity-taptokill/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.unity-taptokill/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Enemy01.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Enemy01.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Enemy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Enemy.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/MainCamera.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/MainCamera.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/MainMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/MainMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/PauseButton.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PauseButton.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/ProtectNPC.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/ProtectNPC.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/LoadingController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/LoadingController.cs" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -196,16 +189,16 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Assets/Scripts/LoadingController.cs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
+            <state relative-caret-position="368">
+              <caret line="28" column="36" lean-forward="true" selection-start-line="28" selection-start-column="36" selection-end-line="28" selection-end-column="36" />
               <folding>
-                <marker date="1558776563563" expanded="false" signature="6:149" ph="..." />
-                <marker date="1558776563563" expanded="true" signature="197:820" ph="{...}" />
-                <marker date="1558776563563" expanded="true" signature="224:279" ph="{...}" />
-                <marker date="1558776563563" expanded="true" signature="307:364" ph="{...}" />
-                <marker date="1558776563563" expanded="true" signature="420:818" ph="{...}" />
-                <marker date="1558776563563" expanded="true" signature="632:703" ph="{...}" />
-                <marker date="1558776563563" expanded="true" signature="772:812" ph="{...}" />
+                <marker date="1558804824454" expanded="false" signature="6:149" ph="..." />
+                <marker date="1558804824454" expanded="true" signature="197:825" ph="{...}" />
+                <marker date="1558804824454" expanded="true" signature="224:279" ph="{...}" />
+                <marker date="1558804824454" expanded="true" signature="307:364" ph="{...}" />
+                <marker date="1558804824454" expanded="true" signature="420:823" ph="{...}" />
+                <marker date="1558804824454" expanded="true" signature="632:708" ph="{...}" />
+                <marker date="1558804824454" expanded="true" signature="777:817" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -287,13 +280,13 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Assets/Scripts/LoadingController.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/MainCamera.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/Enemy.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/MainMenu.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/GameController.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/ProtectNPC.cs" />
         <option value="$PROJECT_DIR$/Assets/Scripts/PauseButton.cs" />
+        <option value="$PROJECT_DIR$/Assets/Scripts/LoadingController.cs" />
       </list>
     </option>
   </component>
@@ -381,7 +374,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24869000" />
+    <option name="totallyTimeSpent" value="24977000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -652,16 +645,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Assets/Scripts/LoadingController.cs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="22" column="18" selection-start-line="22" selection-start-column="18" selection-end-line="22" selection-end-column="18" />
+        <state relative-caret-position="368">
+          <caret line="28" column="36" lean-forward="true" selection-start-line="28" selection-start-column="36" selection-end-line="28" selection-end-column="36" />
           <folding>
-            <marker date="1558776563563" expanded="false" signature="6:149" ph="..." />
-            <marker date="1558776563563" expanded="true" signature="197:820" ph="{...}" />
-            <marker date="1558776563563" expanded="true" signature="224:279" ph="{...}" />
-            <marker date="1558776563563" expanded="true" signature="307:364" ph="{...}" />
-            <marker date="1558776563563" expanded="true" signature="420:818" ph="{...}" />
-            <marker date="1558776563563" expanded="true" signature="632:703" ph="{...}" />
-            <marker date="1558776563563" expanded="true" signature="772:812" ph="{...}" />
+            <marker date="1558804824454" expanded="false" signature="6:149" ph="..." />
+            <marker date="1558804824454" expanded="true" signature="197:825" ph="{...}" />
+            <marker date="1558804824454" expanded="true" signature="224:279" ph="{...}" />
+            <marker date="1558804824454" expanded="true" signature="307:364" ph="{...}" />
+            <marker date="1558804824454" expanded="true" signature="420:823" ph="{...}" />
+            <marker date="1558804824454" expanded="true" signature="632:708" ph="{...}" />
+            <marker date="1558804824454" expanded="true" signature="777:817" ph="{...}" />
           </folding>
         </state>
       </provider>

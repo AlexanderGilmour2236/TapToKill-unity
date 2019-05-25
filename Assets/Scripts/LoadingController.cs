@@ -26,7 +26,7 @@ public class LoadingController : MonoBehaviour
       yield return www;
       if (www.error != null)
       {
-          Debug.Log(www.error);
+          StartCoroutine(Connect());
           yield break;
       }
       Debug.Log(www.text);
