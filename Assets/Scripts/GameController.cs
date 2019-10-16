@@ -41,7 +41,6 @@ public class GameController : MonoBehaviour
     
     [SerializeField] private ProtectNPC protectNpc;
     [SerializeField] private Renderer background;
-    [SerializeField] private GameObject enemyPrefab;
     
     [SerializeField] private Image timeBar;
     /// <summary>
@@ -62,7 +61,7 @@ public class GameController : MonoBehaviour
     public bool IsGameRunning { get; private set; }
     
     public List<Enemy> Enemies { get; private set; }
-    private EnemyPull _enemyPull;
+    [SerializeField] private EnemyPull _enemyPull;
     public bool IsEnemySpawning;
     /// <summary>
     /// Время до следующего спавна противников
@@ -81,6 +80,8 @@ public class GameController : MonoBehaviour
     /// </summary>
     public int MaxEnemiesToSpawn;
 
+    [SerializeField] private MainCamera _mainCamera;
+    
     [SerializeField] private AudioSource _soundAudioSource;
 
     #region Events
@@ -106,7 +107,6 @@ public class GameController : MonoBehaviour
         ProtectNPC.OnNpcHit += DestroyEnemy;
         ProtectNPC.OnNpcDied += () => GameOver(GameOverType.Lost);
 
-        _enemyPull = new GameObject().AddComponent<EnemyPull>(); 
         Enemies = new List<Enemy>();
         IsEnemySpawning = false;
         
@@ -123,10 +123,10 @@ public class GameController : MonoBehaviour
     
     private void Update()
     {
-        background.transform.position = MainCamera.Instance.transform.position;
+        background.transform.position = _mainCamera.transform.position;
         background.material.mainTextureOffset = background.transform.position;
         background.transform.Translate(0,0,10);
-        
+
         // Таймер общего времени
         if (IsGameRunning && !IsPaused)
         {
@@ -170,9 +170,9 @@ public class GameController : MonoBehaviour
             
             Vector3 spawnPoint;
             // Расстояние от центра до края экрана по x
-            float halfWidth = MainCamera.Instance.CameraSize * Screen.width / Screen.height;
+            float halfWidth = _mainCamera.CameraSize * Screen.width / Screen.height;
             
-            Vector2 enemySize = enemyPrefab.GetComponent<SpriteRenderer>().size;
+            Vector2 enemySize = _enemyPull.EnemyPrefab.GetComponent<SpriteRenderer>().size;
             
             for (int i = 0; i < toSpawn; i++)
             {
@@ -180,12 +180,14 @@ public class GameController : MonoBehaviour
                 int side = Random.Range(1, 5);
 
                 Enemy enemy = _enemyPull.GetEnemy();
+                enemy.Init();
+                
                 if (side == 1)
                 {
                     //top
                     enemy.transform.position = new Vector3(
                         Random.Range(-halfWidth + npcPos.x, npcPos.x + halfWidth),
-                        npcPos.y + enemySize.y / 2 + MainCamera.Instance.CameraSize + Random.Range(0, 3),
+                        npcPos.y + enemySize.y / 2 + _mainCamera.CameraSize + Random.Range(0, 3),
                         0);
                 }
                 else if (side == 2)
@@ -193,8 +195,8 @@ public class GameController : MonoBehaviour
                     //right
                     enemy.transform.position = new Vector3(
                         npcPos.x + halfWidth + enemySize.x / 2 + Random.Range(0, 3),
-                        Random.Range(-MainCamera.Instance.CameraSize - enemySize.x / 2 + npcPos.y,
-                            MainCamera.Instance.CameraSize + npcPos.y + enemySize.x / 2),
+                        Random.Range(-_mainCamera.CameraSize - enemySize.x / 2 + npcPos.y,
+                            _mainCamera.CameraSize + npcPos.y + enemySize.x / 2),
                         0);
                 }
                 else if (side == 3)
@@ -202,7 +204,7 @@ public class GameController : MonoBehaviour
                     //bottom
                     enemy.transform.position = new Vector3(
                         Random.Range(-halfWidth + npcPos.x, npcPos.x + halfWidth),
-                        npcPos.y - enemySize.y / 2 - MainCamera.Instance.CameraSize - Random.Range(0, 3),
+                        npcPos.y - enemySize.y / 2 - _mainCamera.CameraSize - Random.Range(0, 3),
                         0);
                 }
                 else if(side == 4)
@@ -210,14 +212,19 @@ public class GameController : MonoBehaviour
                     //left
                     enemy.transform.position = new Vector3(
                         npcPos.x - halfWidth - enemySize.x / 2 - Random.Range(0, 3),
-                        Random.Range(-MainCamera.Instance.CameraSize - enemySize.x / 2 + npcPos.y,
-                            MainCamera.Instance.CameraSize + npcPos.y + enemySize.x / 2),
+                        Random.Range(-_mainCamera.CameraSize - enemySize.x / 2 + npcPos.y,
+                            _mainCamera.CameraSize + npcPos.y + enemySize.x / 2),
                         0);
                 }
 
                 enemy.AudioSource = _soundAudioSource;
                 enemy.FollowedNPC = protectNpc;
-
+                
+                enemy.Restart();
+                
+                enemy.OnEnemyDied += DestroyEnemy;
+                enemy.OnEnemyHit += HitEnemy;
+                
                 Enemies.Add(enemy);
             }
             
@@ -232,6 +239,7 @@ public class GameController : MonoBehaviour
             OnGameStart();
         }
         ClearEnemies();
+        GameOptions.Instance.GameState = GameState.Playing;
         IsEnemySpawning = true;
         _timeToSpawnLeft = 0;
         TimeLeft = startTime;
@@ -239,13 +247,15 @@ public class GameController : MonoBehaviour
     }
 
     public void Pause(bool pauseParameter)
-    {
+    {   
         if (pauseParameter)
         {
             Time.timeScale = 0;
+            GameOptions.Instance.GameState = GameState.Paused;
         }
         else
         {
+            GameOptions.Instance.GameState = GameState.Playing;
             Time.timeScale = 1;
         }
 
@@ -271,6 +281,8 @@ public class GameController : MonoBehaviour
     
     public void ToMainMenu()
     {
+        GameOptions.Instance.GameState = GameState.MainMenu;
+        
         IsEnemySpawning = false;
         IsGameRunning = false;
         
@@ -298,6 +310,15 @@ public class GameController : MonoBehaviour
 
         Enemies.Clear();
     }
+
+    /// <summary>
+    /// Атакует противника
+    /// </summary>
+    /// <param name="enemy"></param>
+    public void HitEnemy(Enemy enemy)
+    {
+        enemy.TakeDamage(PlayerDamage);
+    }
     
     /// <summary>
     /// Возвразает противника в пул и убирает его из контейнера
@@ -309,40 +330,6 @@ public class GameController : MonoBehaviour
         _enemyPull.ReleaseEnemy(enemy);
     }
     
-    class EnemyPull : MonoBehaviour
-    {
-        Stack<Enemy> _used = new Stack<Enemy>();
-        Stack<Enemy> _free = new Stack<Enemy>();
-
-        public Enemy GetEnemy()
-        {
-            if (_free.Count == 0)
-            {
-                Enemy enemy = Instantiate(Instance.enemyPrefab).GetComponent<Enemy>();
-                _used.Push(enemy);
-                return enemy;
-            }
-            else
-            {
-                Enemy enemy = _free.Pop();
-                _used.Push(enemy);
-                
-                enemy.gameObject.SetActive(true);
-                enemy.Restart();
-                return enemy;
-            }
-        }
-
-        public void ReleaseEnemy(Enemy enemy)
-        {
-            if (_used.Count != 0)
-            {
-                _used.Pop();
-                _free.Push(enemy);
-                enemy.gameObject.SetActive(false);
-            }
-        }
-    }
 }
 
 

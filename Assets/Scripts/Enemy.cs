@@ -25,27 +25,39 @@ public class Enemy : MonoBehaviour
     
     #region Events
 
+    public delegate void EnemyHit(Enemy enemy);
+    public event EnemyHit OnEnemyHit;
+    
     public delegate void EnemyDied(Enemy enemy);
     public event EnemyDied OnEnemyDied;
     
     #endregion
     
-    private void Start()
+    public void Init()
     {
-        OnEnemyDied += GameController.Instance.DestroyEnemy;
-        _renderer = GetComponent<SpriteRenderer>();
-        _spriteColor = _renderer.color;
+        if (_renderer == null || _spriteColor == null)
+        {
+            _renderer = GetComponent<SpriteRenderer>();
+            _spriteColor = _renderer.color;
+        }
     }
 
+    /// <summary>
+    /// Восстанавливает начальные значения здоровья и очищает события
+    /// </summary>
     public void Restart()
     {   
         Health = StartHealth;
         _renderer.color = _spriteColor;
+        
+        OnEnemyDied = delegate(Enemy enemy) {  };
+        OnEnemyHit = delegate(Enemy enemy) {  };
     }
     
     private void OnDestroy()
     {
         OnEnemyDied = delegate(Enemy enemy) {  };
+        OnEnemyHit = delegate(Enemy enemy) {  };
     }
     
     private void Update()
@@ -58,9 +70,9 @@ public class Enemy : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (!GameController.Instance.IsPaused)
+        if (GameOptions.Instance.GameState != GameState.Paused && OnEnemyHit!=null)
         {
-            TakeDamage(GameController.Instance.PlayerDamage);
+            OnEnemyHit(this);
         }
     }
 

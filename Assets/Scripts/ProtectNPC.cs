@@ -56,6 +56,8 @@ public class ProtectNPC : MonoBehaviour
 
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip hitSound;
+
+    [SerializeField] private MainCamera _mainCamera;
     
     /// <summary>
     /// Минимальное отклонение новой точки пути по оси x от предыдущей, по модулю
@@ -141,7 +143,7 @@ public class ProtectNPC : MonoBehaviour
         if (_pathPoits.Count > 1)
         {
 
-            if (_pathPoits[1].x < MainCamera.Instance.transform.position.x - MainCamera.Instance.MaxCameraSize * Screen.width/Screen.height)
+            if (_pathPoits[1].x < _mainCamera.transform.position.x - _mainCamera.MaxCameraSize * Screen.width/Screen.height)
             {
                 _pointPull.ReleasePoint(_pathPoits[0]);
                 _pathPoits.Remove(_pathPoits[0]);
@@ -165,7 +167,7 @@ public class ProtectNPC : MonoBehaviour
         }
         else
         {
-            if (_pathPoits[_pathPoits.Count - 1].x < transform.position.x + MainCamera.Instance.MaxCameraSize  * Screen.width/Screen.height)
+            if (_pathPoits[_pathPoits.Count - 1].x < transform.position.x + _mainCamera.MaxCameraSize  * Screen.width/Screen.height)
             {
                 point = _pointPull.GetPoint();
 

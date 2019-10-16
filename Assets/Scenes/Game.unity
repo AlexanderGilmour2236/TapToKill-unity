@@ -301,6 +301,7 @@ MonoBehaviour:
   healthBarYOffset: 0.8
   audioSource: {fileID: 381724471}
   hitSound: {fileID: 8300000, guid: 41d4351085d26f44bbfd098e67651060, type: 3}
+  _mainCamera: {fileID: 1522010457}
   MinPointOffsetX: 0.5
   MaxPointOffset: {x: 7, y: 3}
 --- !u!50 &72851091
@@ -1693,15 +1694,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   protectNpc: {fileID: 72851090}
   background: {fileID: 1236293420}
-  enemyPrefab: {fileID: 3222628336614893267, guid: f6136c986d4109b4695f2ffa2fa3183b,
-    type: 3}
   timeBar: {fileID: 621757346}
   startTime: 60
   PlayerDamage: 1
+  _enemyPull: {fileID: 1328546795}
   IsEnemySpawning: 0
   spawnEvery: 2
   MinEnemiesToSpawn: 2
   MaxEnemiesToSpawn: 4
+  _mainCamera: {fileID: 1522010457}
   _soundAudioSource: {fileID: 381724471}
 --- !u!1 &1210191243
 GameObject:
@@ -1939,6 +1940,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1328546794
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1328546796}
+  - component: {fileID: 1328546795}
+  m_Layer: 0
+  m_Name: EnemyPull
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1328546795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328546794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d83a2b61e75f00d449c11a009df60ac9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enemyPrefab: {fileID: 3222628336614893267, guid: f6136c986d4109b4695f2ffa2fa3183b,
+    type: 3}
+--- !u!4 &1328546796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328546794}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1522010453
 GameObject:

@@ -5,33 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 public class MainCamera : MonoBehaviour
-{
-
-    #region Singleton
-
-    private static MainCamera _instance;
-
-    public static MainCamera Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                GameObject ins = new GameObject("MainCamera");
-                ins.AddComponent<MainCamera>();
-            }
-
-            return _instance;
-        }
-    }
-
-    private void Awake()
-    {
-        _instance = this;
-    }
-
-    #endregion   
-    
+{    
     public Transform Target;
     public float CameraSpeed;
     public float CameraChangeSizeSpeed;
@@ -58,7 +32,7 @@ public class MainCamera : MonoBehaviour
     {
         transform.position = Vector2.Lerp(transform.position,Target.position, CameraSpeed*Time.deltaTime);
         transform.Translate(0,0,-10);
-        if (GameController.Instance.IsGameRunning && !GameController.Instance.IsPaused)
+        if (GameOptions.Instance.GameState == GameState.Playing)
         {
             transform.Translate(OffsetX, 0, 0);
         }
